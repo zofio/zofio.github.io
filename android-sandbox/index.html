@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/logo.ico">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/logo.ico">
+    
+    
+        <link rel="mask-icon" href="/img/logo.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>Android 应用沙盒浅析 | 无码之地</title>
+
+
+
+
+
+    <!-- OpenGraph -->
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="https://cdn.jsdelivr.net/npm/highlight.js@10.1.2/styles/default.min.css" media="none" onload="this.media='all'">
+        
+    
+
+    
+
+    
+
+     
+
+    <!-- custom head -->
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <div id="app">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">无码之地</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/download/" class="navbar-menu button">备份下载</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/download/" class="dropdown-menu button">备份下载</a>
+                
+
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        Android 应用沙盒浅析
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2022/03/" class="post-meta__date button">2022-03-04</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>其实这是一个存在很久的概念，只是近几年Android开发者才开始适配。他如同Linux和ios那样，应用单独储存却又可以互相交互。下面就来说一下这其中有什么</p>
+<span id="more"></span>
+
+<h2 id="1-沙盒"><a href="#1-沙盒" class="headerlink" title="1. 沙盒"></a>1. 沙盒</h2><p>首先看官方的解释</p>
+<blockquote>
+<p>Android 平台利用基于用户的 Linux 保护机制识别和隔离应用资源，可将不同的应用分隔开来，并保护应用和系统免受恶意应用的攻击。为此，Android 会为每个 Android 应用分配一个独一无二的用户 ID (UID)，并让应用在自己的进程中运行。</p>
+<p>Android 会使用该 UID 设置一个内核级应用沙盒。内核会在进程级别利用标准的 Linux 机制（例如，分配给应用的用户 ID 和组 ID）实现应用和系统之间的安全防护。默认情况下，应用不能彼此交互，而且对操作系统的访问权限会受到限制。如果应用 A 尝试执行恶意操作（例如在没有权限的情况下读取应用 B 的数据或拨打电话），系统会阻止此类行为，因为应用 A 没有相应的默认用户权限。这一沙盒机制非常简单，可审核，并且基于已有数十年历史的 UNIX 风格的进程用户隔离和文件权限机制。</p>
+</blockquote>
+<p>首先我们要来简单说一下<a target="_blank" rel="noopener" href="https://source.android.com/security/selinux?hl=zh-cn">SELinux</a>的概念。SELinux就是Security-Enhanced Linux（安全增强型Linux），<a target="_blank" rel="noopener" href="https://github.com/SELinuxProject/selinux">https://github.com/SELinuxProject/selinux</a> 。Android 使用SELinux对包括root&#x2F;su在内的所有进程进行控制强制访问权限（MAC，mandatory access control）。</p>
+<p>下面来说一下，各个Android版本之间的应用间保护机制：</p>
+<ul>
+<li>5.0 Android只区分了系统APP（pre-app不包括在内）和第三方APP的区别，系统使用MAC将二者分离开来，但是两种APP在相同的SELinux环境中运行</li>
+<li>6.0 Android支持了跨用户边界隔离应用。并且对应用主目录上的默认 DAC 权限从 751 更改为 700，这里的权限请看(权限)[..&#x2F;权限]</li>
+<li>8.0 中，所有应用都设为使用 <code>seccomp-bpf</code> 过滤器运行，该过滤器可限制允许应用使用的系统调用，从而增强应用&#x2F;内核边界的安全性</li>
+<li>9.0 中，targetSdkVersion &gt;&#x3D; 28 的所有非特权应用都必须在不同的 SELinux 沙盒中运行，并针对各个应用提供 MAC。这种保护机制可以提升应用隔离效果，防止替换安全默认设置，并且（最重要的是）防止应用的数据可让所有人访问。</li>
+<li>10.0 中，文件管理的权限甚至有限，不可以直接访问应用数据文件。APP不可以直接访问<code>/sdcard/DCIM</code> 文件夹，不过APP保留了访问媒体路径的方法。</li>
+</ul>
+<h2 id="2-沙盒内容分享"><a href="#2-沙盒内容分享" class="headerlink" title="2. 沙盒内容分享"></a>2. 沙盒内容分享</h2><h3 id="数据文件-x2F-二进制文件-：-content-provider"><a href="#数据文件-x2F-二进制文件-：-content-provider" class="headerlink" title="数据文件&#x2F;二进制文件 ： content provider"></a>数据文件&#x2F;二进制文件 ： content provider</h3><p>不多赘述</p>
+<h3 id="物理媒体文件-：储存"><a href="#物理媒体文件-：储存" class="headerlink" title="物理媒体文件 ：储存"></a>物理媒体文件 ：储存</h3><p>Google推荐使用<code>MediaStore</code> 进行媒体文件储存，读取时使用<code>MediaStore.Download</code> 读取。 注意，这里的APP的intent必须使用<code>ACTION_OPEN_DOCUMENT</code> 属性。</p>
+<p>Google 强调新APP需要使用分区储存，APP在自己data文件下储存内容即可，使用MediaStore进行媒体文件共享。如果你实在需要访问外部数据（之后的高版本系统可能被禁），那么你需要首先判断<code> Environment.getExternalStorageState()</code> 的返回状态，当返回<code>MEDIA_MOUNTED</code>时，你可以在外部空间进行读写。返回<code>MEDIA_MOUNTED_READ_ONLY</code>时，你只可以进行读取。</p>
+<p>共享集合空间的文件访问推荐使用MediaStore、MediaProvider进行适配。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="权限"><a href="#权限" class="headerlink" title="权限"></a>权限</h3><p>r&#x3D;读取属性　　&#x2F;&#x2F;值＝4</p>
+<p>w&#x3D;写入属性　　&#x2F;&#x2F;值＝2</p>
+<p>x&#x3D;执行属性　　&#x2F;&#x2F;值＝1</p>
+<p>7&#x3D;4+2+1 ，5&#x3D;4+1，3&#x3D;2+1，6&#x3D;4+2，0&#x3D;没有权限</p>
+<p>751 &#x3D; 给file的属主分配读、写、执行(7)的权限，给file的所在组分配读、执行(5)的权限，给其他用户分配执行(1)的权限</p>
+<p>700 依次类推</p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>本文作者：</strong>ZZH
+        </p>
+        <p>
+            <strong>
+                本文链接：
+            </strong>
+            <a href="https://nevercode.cn/android-sandbox/">https://nevercode.cn/android-sandbox/</a>
+        </p>
+        
+            <strong>
+                <p>除特殊说明外，所有文章保留权限。请不要转移本页面内容到其他站点。</p>
+
+            </strong>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>更新于 2023-02-27</p></div> 
+    <div class="post-entry__tags"></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+                <a href="/my-english/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            Previous Post
+                        </div>
+                        <div class="nav__title">
+                            英文特殊发音
+                        </div>
+                    </div>
+                </a>
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/about-android-v-ab/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            Android 的 v-a/b分区简单理解
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">无码之地</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>

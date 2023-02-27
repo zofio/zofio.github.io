@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/logo.ico">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/logo.ico">
+    
+    
+        <link rel="mask-icon" href="/img/logo.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>CoordinatorLayout和列表嵌套冲突的问题 | 无码之地</title>
+
+
+
+
+
+    <!-- OpenGraph -->
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="https://cdn.jsdelivr.net/npm/highlight.js@10.1.2/styles/default.min.css" media="none" onload="this.media='all'">
+        
+    
+
+    
+
+    
+
+     
+
+    <!-- custom head -->
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <div id="app">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">无码之地</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/download/" class="navbar-menu button">备份下载</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/download/" class="dropdown-menu button">备份下载</a>
+                
+
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        CoordinatorLayout和列表嵌套冲突的问题
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2022/03/" class="post-meta__date button">2022-03-04</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <ul>
+<li>问题的出现</li>
+</ul>
+<p>为什么用ListView呢，因为数据是通过socket给过来的，而且每次都是一整组数据，用recycleView会每个格子刷一遍，数据改变就刷。但是ListView替换数据之后notifydatachanged就可以了，adapter只会刷新一次。</p>
+<span id="more"></span>
+<ul>
+<li>解决办法</li>
+</ul>
+<p>首先自定义ListView，不给他来回滑动</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">package</span> com.fota.android.moudles.quotation;<br><br><span class="hljs-keyword">import</span> android.content.Context;<br><span class="hljs-keyword">import</span> android.os.Build;<br><span class="hljs-keyword">import</span> android.support.v4.view.NestedScrollingChild;<br><span class="hljs-keyword">import</span> android.support.v4.view.NestedScrollingChildHelper;<br><span class="hljs-keyword">import</span> android.util.AttributeSet;<br><span class="hljs-keyword">import</span> android.widget.ListView;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NoScrollListView</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ListView</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">NestedScrollingChild</span> &#123;<br><br>        <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> NestedScrollingChildHelper mScrollingChildHelper;<br><br>        <span class="hljs-keyword">public</span> <span class="hljs-title function_">NoScrollListView</span><span class="hljs-params">(Context context, AttributeSet attrs)</span> &#123;<br>            <span class="hljs-built_in">super</span>(context, attrs);<br>            mScrollingChildHelper = <span class="hljs-keyword">new</span> <span class="hljs-title class_">NestedScrollingChildHelper</span>(<span class="hljs-built_in">this</span>);<br>            <span class="hljs-keyword">if</span> (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.LOLLIPOP) &#123;<br>                setNestedScrollingEnabled(<span class="hljs-literal">true</span>);<br>            &#125;<br><br><br>        &#125;<br><br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setNestedScrollingEnabled</span><span class="hljs-params">(<span class="hljs-type">boolean</span> enabled)</span> &#123;<br>            mScrollingChildHelper.setNestedScrollingEnabled(enabled);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">isNestedScrollingEnabled</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> mScrollingChildHelper.isNestedScrollingEnabled();<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">startNestedScroll</span><span class="hljs-params">(<span class="hljs-type">int</span> axes)</span> &#123;<br>            <span class="hljs-keyword">return</span> mScrollingChildHelper.startNestedScroll(axes);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">stopNestedScroll</span><span class="hljs-params">()</span> &#123;<br>            mScrollingChildHelper.stopNestedScroll();<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">hasNestedScrollingParent</span><span class="hljs-params">()</span> &#123;<br>            <span class="hljs-keyword">return</span> mScrollingChildHelper.hasNestedScrollingParent();<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">dispatchNestedScroll</span><span class="hljs-params">(<span class="hljs-type">int</span> dxConsumed, <span class="hljs-type">int</span> dyConsumed, <span class="hljs-type">int</span> dxUnconsumed,</span><br><span class="hljs-params">                                            <span class="hljs-type">int</span> dyUnconsumed, <span class="hljs-type">int</span>[] offsetInWindow)</span> &#123;<br>            <span class="hljs-keyword">return</span> mScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed,<br>                    dxUnconsumed, dyUnconsumed, offsetInWindow);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">dispatchNestedPreScroll</span><span class="hljs-params">(<span class="hljs-type">int</span> dx, <span class="hljs-type">int</span> dy, <span class="hljs-type">int</span>[] consumed, <span class="hljs-type">int</span>[] offsetInWindow)</span> &#123;<br>            <span class="hljs-keyword">return</span> mScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">dispatchNestedFling</span><span class="hljs-params">(<span class="hljs-type">float</span> velocityX, <span class="hljs-type">float</span> velocityY, <span class="hljs-type">boolean</span> consumed)</span> &#123;<br>            <span class="hljs-keyword">return</span> mScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);<br>        &#125;<br><br>        <span class="hljs-meta">@Override</span><br>        <span class="hljs-keyword">public</span> <span class="hljs-type">boolean</span> <span class="hljs-title function_">dispatchNestedPreFling</span><span class="hljs-params">(<span class="hljs-type">float</span> velocityX, <span class="hljs-type">float</span> velocityY)</span> &#123;<br>            <span class="hljs-keyword">return</span> mScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);<br>        &#125;<br><br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后在使用时，在外层嵌套<code>NestedScrollView</code></p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">android.support.v4.widget.NestedScrollView</span></span><br><span class="hljs-tag">    <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;match_parent&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;match_parent&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">android:fillViewport</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">app:layout_behavior</span>=<span class="hljs-string">&quot;@string/appbar_scrolling_view_behavior&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">com.xxx.widget.NoScrollListView</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:id</span>=<span class="hljs-string">&quot;@+id/quotation_list&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:layout_width</span>=<span class="hljs-string">&quot;match_parent&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:layout_height</span>=<span class="hljs-string">&quot;match_parent&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:background</span>=<span class="hljs-string">&quot;@drawable/order_bg&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:divider</span>=<span class="hljs-string">&quot;#FAFAFA&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:dividerHeight</span>=<span class="hljs-string">&quot;0.5dp&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:footerDividersEnabled</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:scrollbars</span>=<span class="hljs-string">&quot;none&quot;</span> /&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">android.support.v4.widget.NestedScrollView</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>即可</p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>本文作者：</strong>ZZH
+        </p>
+        <p>
+            <strong>
+                本文链接：
+            </strong>
+            <a href="https://nevercode.cn/fix-conflict-between-CoordinatorLayout-and-list/">https://nevercode.cn/fix-conflict-between-CoordinatorLayout-and-list/</a>
+        </p>
+        
+            <strong>
+                <p>除特殊说明外，所有文章保留权限。请不要转移本页面内容到其他站点。</p>
+
+            </strong>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>更新于 2023-02-27</p></div> 
+    <div class="post-entry__tags"></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+                <a href="/android-studio-console-unicode-fix/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            Previous Post
+                        </div>
+                        <div class="nav__title">
+                            Android Studio console 输出乱码解决
+                        </div>
+                    </div>
+                </a>
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/build-private-maver-server-with-nexus3/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            本地部署nexus3 搭建maven私服
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">无码之地</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>

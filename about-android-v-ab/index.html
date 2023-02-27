@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/logo.ico">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/logo.ico">
+    
+    
+        <link rel="mask-icon" href="/img/logo.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>Android 的 v-a/b分区简单理解 | 无码之地</title>
+
+
+
+
+
+    <!-- OpenGraph -->
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="https://cdn.jsdelivr.net/npm/highlight.js@10.1.2/styles/default.min.css" media="none" onload="this.media='all'">
+        
+    
+
+    
+
+    
+
+     
+
+    <!-- custom head -->
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <div id="app">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">无码之地</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/download/" class="navbar-menu button">备份下载</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/download/" class="dropdown-menu button">备份下载</a>
+                
+
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        Android 的 v-a/b分区简单理解
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2022/03/" class="post-meta__date button">2022-03-04</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <h3 id="基础理解"><a href="#基础理解" class="headerlink" title="基础理解"></a>基础理解</h3><p>我们可以直接把v-a&#x2F;b分区理解成，当你在使用手机，进行系统升级，系统会把升级内容存放在A分区，你继续使用B分区，前面的V就是虚拟的意思（virtual）。在尽量不影响你使用的开机情况下进行升级，取消了在rec分区进行升级的复杂操作。</p>
+<span id="more"></span>
+
+<h3 id="详细理解（我的浅见）"><a href="#详细理解（我的浅见）" class="headerlink" title="详细理解（我的浅见）"></a>详细理解（我的浅见）</h3><p>首先说结构。传统结构中，存在<code>rec</code>，<code>boot</code>，<code>system</code>分区，在V-ab结构中，抛弃了提到的这三个分区，取而代之的是：<code>boot_a</code>,<code>system_a</code>,<code>boot_b</code>,<code>system_b</code>。这就是v-ab。</p>
+<p>首先要介绍Δ（delta，小写δ）文件。Δ文件就是cow(copy-on-write)文件，字面意思，具体可以看<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Copy-on-write">wikipedia的解释</a>。然后我们首先打开谷歌的官方文档：<a target="_blank" rel="noopener" href="https://source.android.com/devices/tech/ota/virtual_ab#device-mapper">https://source.android.com/devices/tech/ota/virtual_ab#device-mapper</a> ，里面请看：这个super分区（超级分区）</p>
+<p>这个分区，就是用来储存Δ文件的。那么在进行一些比较大的升级的时候，Δ文件可能比较大，预分的super分区可能存在不足的现象。这个时候，会把多余的文件储存到&#x2F;data下。这个情况基本只发生在Android11上，因为Android10预留了两倍逻辑分区的空间。Android10的VAB分区本身就不是原生的，是根据动态分区改装而来的。</p>
+<p>那么，当你在Android11手机上，开机状态下进行升级时，在哪里查看文件呢？你可以查看下面这个路径：<code>/data/gsi/ota</code>，下面存在一些列的带有<code>cow</code>的<code>.img</code>文件。至于存在与哪里，就看系统分配的<code>super</code>分区的逻辑空间大小了。</p>
+<p>现在再看官方文档：<a target="_blank" rel="noopener" href="https://source.android.com/devices/tech/ota/virtual_ab#dm-snapshot-overview">https://source.android.com/devices/tech/ota/virtual_ab#dm-snapshot-overview</a> ，下面的DM概述。其中：</p>
+<blockquote>
+<p>快照设备是使用snapshot目标创建的。写入快照设备将写入COW设备。从快照设备读取是从基本设备读取还是从COW设备读取，具体取决于快照是否更改了所访问的数据。</p>
+</blockquote>
+<p>这就说明了，为什么在生成完cow文件之后，系统把<code>bootContral.hal</code>的合并状态改为snapshoted了。如果当前你在操作a空间，那么系统会把你当前的系统分区从<code>system_a</code>改为<code>system_a_cow</code>，然后会开始把你切换到B分区，你至此仍然可以正常使用手机，只是切换过程中你使用手机，可能会有一点点卡感觉。</p>
+<p>在生成完cow文件之后，系统这时提示我们重启。我们发现，重启依然会有一个时间需要等待，和之前的rec读cmd安装差不多啊。那么到底这个时间系统在做什么呢？</p>
+<p>首先我们默认你升级前使用的是a分区。在你关机后，由于之前的hal文件改为了snapshoted，这个时候系统会把对应的旧系统分区和Δ文件进行合并。不过这个时候单纯是加载到内存中，不是合并的二进制文件。如果这个时候重启成功，那么系统会在开机后，偷偷地合并剩余的二进制文件，这个时候系统会把<code>bootContral.hal</code>的合并状态改为merging，合并中。如果存在开机失败的状态，那么系统则直接读取老系统文件进行回滚（其实不是回滚，直接读取就完事了）。直至开机成功，hal文件的合并状态才会被置空，等待下一次升级。</p>
+<p>看到这里你会问了，这个逻辑其实和之前的读取刷机脚本进行升级差不多啊。其实这里最大的差别，除了分区升级外，就是一个最厉害的点：在<code>bootContral.hal</code>的状态为合并中（merging）的时候，你可以随意重启手机。而只有在<code>bootContral.hal</code>的状态为合并中的时候，也才算是真正的系统升级状态。接下来解释为什么很多手机看起来依然和之前的手机升级效果差不多？其实很多厂商会估计把这个合并过程加上动画……让你看起来手机没有进入系统，实际上手机是进入系统了，只是没有启动桌面，给你看这个合并进度而已。如果这个时候你重启，在重启后，手机会继续合并剩余的文件，减少了崩溃的情况。即使崩溃，手机也会直接读取旧系统文件，你依然可以重新进行升级！</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>其实这只是我简单的理解。也看了网上的一些文章。因为谷歌对v-ab的描写基本等于没说… 看了大神们对v-ab的解释之后，我才知道这玩意其实挺糊弄（中间替换系统分区名字那一段…），也挺牛的，减少了你每月一次可能由于升级导致系统崩溃的情况，也开始逐渐抛弃bl……</p>
+<p>唯一对不起的就是刷机佬，刷机学习成本再次提高…</p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>本文作者：</strong>ZZH
+        </p>
+        <p>
+            <strong>
+                本文链接：
+            </strong>
+            <a href="https://nevercode.cn/about-android-v-ab/">https://nevercode.cn/about-android-v-ab/</a>
+        </p>
+        
+            <strong>
+                <p>除特殊说明外，所有文章保留权限。请不要转移本页面内容到其他站点。</p>
+
+            </strong>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>更新于 2023-02-27</p></div> 
+    <div class="post-entry__tags"></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+                <a href="/android-sandbox/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            Previous Post
+                        </div>
+                        <div class="nav__title">
+                            Android 应用沙盒浅析
+                        </div>
+                    </div>
+                </a>
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/my-blogger-theme/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            我的blogger主题，国内可访问
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">无码之地</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>

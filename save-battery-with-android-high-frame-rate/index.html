@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/logo.ico">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/logo.ico">
+    
+    
+        <link rel="mask-icon" href="/img/logo.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>Android高帧率手机引发的省电需求 | 无码之地</title>
+
+
+
+
+
+    <!-- OpenGraph -->
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="https://cdn.jsdelivr.net/npm/highlight.js@10.1.2/styles/default.min.css" media="none" onload="this.media='all'">
+        
+    
+
+    
+
+    
+
+     
+
+    <!-- custom head -->
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <div id="app">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">无码之地</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/download/" class="navbar-menu button">备份下载</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/download/" class="dropdown-menu button">备份下载</a>
+                
+
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        Android高帧率手机引发的省电需求
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2022/03/" class="post-meta__date button">2022-03-04</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>随着高帧率手机的普及，在很多APP内需要限制手机的帧率来进行省电优化。今天的例子就是视频（直播&#x2F;点播）播放的软件。</p>
+<h2 id="推流优化"><a href="#推流优化" class="headerlink" title="推流优化"></a>推流优化</h2><p>首先我们说，在视频采集时，有两种采集方式：屏幕采集和camera采集。</p>
+<span id="more"></span>
+
+<h3 id="camera采集"><a href="#camera采集" class="headerlink" title="camera采集"></a>camera采集</h3><p>这里我们可以直接限制camera的采集频率。这里有几个优化方案供参考</p>
+<blockquote>
+<p>android.hardware.camera2.params.StreamConfigurationMap</p>
+</blockquote>
+<p>现在的很多手机采集一般为50HZ-60HZ，部分低端机前置为30HZ（** 也有部分安卓机器的Camera接口无法实现30FPS及以上的数据采集频率，导致FPS始终为20，这里可以灵活判断当前帧率采取优化 *<em>），所以这里需要手动设置<code>StreamConfigurationMap</code>的采集帧率为30HZ，</em>注意*：这里设置采集范围的时，fpsMax需要大于fpsMin，且需要是30的倍数。</p>
+<p>不仅需要优化帧率，在采集视频时推荐采集低分辨率的视频。CameraX 会自动选择内部 Camera2 界面分辨率，默认目标分辨率设置为 640x480，Camera最大支持1080P的视频输出。（ ** 如果你希望采集的视频值大于640x480时，那么你需要参考使用 <a target="_blank" rel="noopener" href="https://developer.android.com/reference/kotlin/androidx/camera/core/ImageAnalysis.Builder#settargetresolution">setTargetResolution</a> 或者 <a target="_blank" rel="noopener" href="https://developer.android.com/reference/kotlin/androidx/camera/core/ImageAnalysis.Builder#settargetaspectratio">settargetaspectratio</a> 这两个方法 *<em>）。这里推荐你使用360</em>640或更低的分辨率，设置方法为</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><code class="hljs stylus">val imageAnalysis = ImageAnalysis<span class="hljs-selector-class">.Builder</span>()<br>    <span class="hljs-selector-class">.setTargetResolution</span>(<span class="hljs-built_in">Size</span>(<span class="hljs-number">640</span>, <span class="hljs-number">360</span>))<br>    <span class="hljs-selector-class">.build</span>()<br></code></pre></td></tr></table></figure>
+
+<p>另外，你可以在你的推流SDK中打开硬件支持，如果你是手动推流，你可以自己打开硬件支持(APP中是默认开启的，但是推流的SDK貌似都不是)</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><code class="hljs stylus"><span class="hljs-comment">//下面三种方式任选其一即可。</span><br><span class="hljs-comment">//在清单文件的application或者activityzhong</span><br>&lt;application android:hardwareAccelerated=<span class="hljs-string">&quot;true&quot;</span> ...&gt;<br><span class="hljs-comment">//你的activity中</span><br>window<span class="hljs-selector-class">.setFlags</span>(<br>       WindowManager<span class="hljs-selector-class">.LayoutParams</span><span class="hljs-selector-class">.FLAG_HARDWARE_ACCELERATED</span>,<br>       WindowManager<span class="hljs-selector-class">.LayoutParams</span><span class="hljs-selector-class">.FLAG_HARDWARE_ACCELERATED</span><br>)<br><span class="hljs-comment">//在你的view中</span><br>myView<span class="hljs-selector-class">.setLayerType</span>(View<span class="hljs-selector-class">.LAYER_TYPE_SOFTWARE</span>, null)<br></code></pre></td></tr></table></figure>
+
+<p>或者你可以使用MediaCodec，具体参考这篇文章，写的很不错：<a target="_blank" rel="noopener" href="https://blog.csdn.net/halleyzhang3/article/details/11473961/">Android 用MediaCodec实现视频硬解码</a></p>
+<p>MediaCodec官方文档：<a target="_blank" rel="noopener" href="https://developer.android.com/reference/android/media/MediaCodec">https://developer.android.com/reference/android/media/MediaCodec</a></p>
+<h3 id="屏幕采集："><a href="#屏幕采集：" class="headerlink" title="屏幕采集："></a>屏幕采集：</h3><p>这里我就简单说一下通过<code>MediaProjectionManager</code>采集视频的方案，简单多了：</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><code class="hljs reasonml"><span class="hljs-comment">//设置音频来源</span><br>mMediaRecorder.set<span class="hljs-constructor">AudioSource(MediaRecorder.AudioSource.MIC)</span>;<br><span class="hljs-comment">//设置视频来源</span><br>mMediaRecorder.set<span class="hljs-constructor">VideoSource(MediaRecorder.VideoSource.SURFACE)</span>;<br><span class="hljs-comment">//输出的录屏文件格式</span><br>mMediaRecorder.set<span class="hljs-constructor">OutputFormat(MediaRecorder.OutputFormat.MPEG_4)</span>;<br><span class="hljs-comment">//录屏文件路径</span><br>mMediaRecorder.set<span class="hljs-constructor">OutputFile( <span class="hljs-params">mRecordFilePath</span> )</span>;<br><span class="hljs-comment">//视频尺寸</span><br>mMediaRecorder.set<span class="hljs-constructor">VideoSize(<span class="hljs-params">mRecordWidth</span>, <span class="hljs-params">mRecordHeight</span>)</span>;<br><span class="hljs-comment">//音视频编码器</span><br>mMediaRecorder.set<span class="hljs-constructor">VideoEncoder(MediaRecorder.VideoEncoder.H264)</span>;<br>mMediaRecorder.set<span class="hljs-constructor">AudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)</span>;<br><span class="hljs-comment">//比特率</span><br>mMediaRecorder.set<span class="hljs-constructor">VideoEncodingBitRate((<span class="hljs-params">int</span>)</span> (mRecordWidth<span class="hljs-operator"> * </span>mRecordHeight<span class="hljs-operator"> * </span><span class="hljs-number">3.6</span>));<br><span class="hljs-comment">//视频帧率</span><br>mMediaRecorder.set<span class="hljs-constructor">VideoFrameRate(20)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>这是<code>MediaProjectionManager</code>的一些属性，在开始录制之前你设置其中的一些属性即可。例如分辨率，比特率，以及帧率。</p>
+<p>一般如果是人直播，可以设置为25FPS，游戏直播可以设置为35-45，具体可以自行判断。比特率是影响速度的一大因素，也是直接影响画质的一大因素。如果是画面变化快的游戏或者人物直播，可以适当调低。</p>
+<h2 id="播放优化"><a href="#播放优化" class="headerlink" title="播放优化"></a>播放优化</h2><p>视频播放就简单多了。如果是你自定义的播放view，我们只需要限制view的帧率即可。在上面的方法中，我们看到<code>mMediaRecorder.setVideoFrameRate(20);</code>这样限制帧率的方法存在，那么在我们自定义的view中有没有这样的方法？答案是有</p>
+<h3 id="推荐setFrameRate-方法"><a href="#推荐setFrameRate-方法" class="headerlink" title="推荐setFrameRate()方法"></a>推荐setFrameRate()方法</h3><p>首先，这是一个API29以上的方法…，如果你的兼容用户低于30，那么请暂时忽略这部分。</p>
+<ol>
+<li>Surface.setFrameRate()</li>
+<li>SurfaceControl.Transaction.setFrameRate()</li>
+<li>ANativeWindow_setFrameRate()</li>
+<li>ASurfaceTransaction_setFrameRate()</li>
+</ol>
+<p>使用方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><code class="hljs java"><span class="hljs-number">1</span> <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setFrameRate</span> <span class="hljs-params">(<span class="hljs-type">float</span> frameRate, <span class="hljs-type">int</span> compatibility)</span><br><br><span class="hljs-number">2</span> <span class="hljs-keyword">public</span> SurfaceControl.Transaction <span class="hljs-title function_">setFrameRate</span> <span class="hljs-params">(SurfaceControl sc, <span class="hljs-type">float</span> frameRate, <span class="hljs-type">int</span> compatibility)</span><br><br><span class="hljs-comment">///------------------NDK------------------///</span><br><br><span class="hljs-number">3</span> int32_t <span class="hljs-title function_">ANativeWindow_setFrameRate</span><span class="hljs-params">(</span><br><span class="hljs-params">  ANativeWindow *window,</span><br><span class="hljs-params">  <span class="hljs-type">float</span> frameRate,</span><br><span class="hljs-params">  int8_t compatibility</span><br><span class="hljs-params">)</span><br><br><span class="hljs-number">4</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">ASurfaceTransaction_setFrameRate</span><span class="hljs-params">(</span><br><span class="hljs-params">  ASurfaceTransaction *transaction,</span><br><span class="hljs-params">  ASurfaceControl *surface_control,</span><br><span class="hljs-params">  <span class="hljs-type">float</span> frameRate,</span><br><span class="hljs-params">  int8_t compatibility</span><br><span class="hljs-params">)</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="c-中-有问题，在改"><a href="#c-中-有问题，在改" class="headerlink" title="c++中(有问题，在改)"></a>c++中(有问题，在改)</h3><figure class="highlight c"><table><tr><td class="code"><pre><code class="hljs c"><br>SDL_Event event;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> time = <span class="hljs-number">0</span>;<span class="hljs-comment">//时间记录</span><br><span class="hljs-type">static</span> <span class="hljs-type">float</span> fps=<span class="hljs-number">20</span>;<span class="hljs-comment">//你需要的fps</span><br><br><span class="hljs-comment">//time = SDL_GetTicks() 或者你给一个初始值，在开始之前设置最好</span><br><br><span class="hljs-keyword">while</span>(running)&#123;<br><br>        <span class="hljs-keyword">while</span> (SDL_PollEvent(&amp;event)) <br>        &#123;<br>            SDL_WaitEvent(&amp;event);<br>            OnEvent(&amp;event);<br>            time = SDL_GetTicks();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span>(SDL_GetTicks()-time&gt;(<span class="hljs-number">1000</span>/fps))<br>        &#123;<br>            time = SDL_GetTicks();<br>            OnUpdate();<br>            OnRender();<br>        &#125;<br><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="native中"><a href="#native中" class="headerlink" title="native中"></a>native中</h3><p>话不多说，直接上代码：</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><code class="hljs reasonml"><span class="hljs-comment">//自定义surfaceview，然后在绘制方法中</span><br>long time = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>current<span class="hljs-constructor">TimeMillis()</span>;<br>drow或者其他的绘制方法<br><span class="hljs-comment">//这里的30是1000/30约等于33帧的意思</span><br><span class="hljs-keyword">while</span>((<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>current<span class="hljs-constructor">TimeMillis()</span> - time) &lt;= <span class="hljs-number">30</span>) &#123;    <br>	<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Thread</span>.</span></span>yield<span class="hljs-literal">()</span>;  <span class="hljs-comment">//yield我个人感觉是最佳选择，但是没法控制，类似你一直Thread.Sleep(0)一样，精细的同学可以考虑Thread.sleep(30-(System.currentTimeMillis() - time));不过因为这里是动态方法，你需要考虑到可能造成超时的问题，我的方案是直接在catch中也写上刷新方法…</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>以上就是大致的意思。总的来说，无非就集中方案，就是分用处去限制罢了。</p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>本文作者：</strong>ZZH
+        </p>
+        <p>
+            <strong>
+                本文链接：
+            </strong>
+            <a href="https://nevercode.cn/save-battery-with-android-high-frame-rate/">https://nevercode.cn/save-battery-with-android-high-frame-rate/</a>
+        </p>
+        
+            <strong>
+                <p>除特殊说明外，所有文章保留权限。请不要转移本页面内容到其他站点。</p>
+
+            </strong>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>更新于 2023-02-27</p></div> 
+    <div class="post-entry__tags"></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+                <a href="/android-zoom-anim-when-click-btn/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            Previous Post
+                        </div>
+                        <div class="nav__title">
+                            Android View 按下缩小的效果
+                        </div>
+                    </div>
+                </a>
+            
+        </div>
+        <div class="nav__next">
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">无码之地</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>

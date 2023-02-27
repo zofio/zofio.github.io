@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/logo.ico">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/logo.ico">
+    
+    
+        <link rel="mask-icon" href="/img/logo.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>安装/升级Windows11之后不能进入BIOS的问题 | 无码之地</title>
+
+
+
+
+
+    <!-- OpenGraph -->
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="https://cdn.jsdelivr.net/npm/highlight.js@10.1.2/styles/default.min.css" media="none" onload="this.media='all'">
+        
+    
+
+    
+
+    
+
+     
+
+    <!-- custom head -->
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <div id="app">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">无码之地</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/download/" class="navbar-menu button">备份下载</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/download/" class="dropdown-menu button">备份下载</a>
+                
+
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        安装/升级Windows11之后不能进入BIOS的问题
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2022/04/" class="post-meta__date button">2022-04-12</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>兴高采烈的体验了Windows11，惊奇的发现LOL帧率比WIN10高很多，也很稳定，但是发现了一个问题：开机之后电脑始终黑屏，然后2-3秒进入系统，中间没有BIOS的启动页面。</p>
+<p>试了试，各种热键按烂了都进不去BIOS，而且用了下面的所有方法：</p>
+<ol>
+<li>开机的时候疯狂按 DEL ，F1-F12 ，都进不去</li>
+<li>尝试进入 高级启动，不可进入，重启直接进桌面</li>
+<li>尝试 重置此电脑，直接重启开始提示初始化失败</li>
+<li>拔掉所有硬盘开机，直接一直黑屏，不会提示没找到启动盘</li>
+<li>关掉快速启动 。我的机器本身就没有快速启动选项，但是我依然通过 cmd 关掉了，解决不变。</li>
+<li>长按开机启动，无效</li>
+<li>开机状态按住 shift 进行重启，无效</li>
+</ol>
+<p>唯一没有尝试的就是扣电池，因为我的主板比较小，电池在显卡下面，机箱也有点小，所以显卡非常非常难拆…</p>
+<p>搞了好久没搞好，准备叫人上门了。不过周一上班的时候在v2问了一下，被告知是DP的固件的问题…</p>
+<p>解决方案：</p>
+<ol>
+<li>使用HDMI链接显示器，进入BIOS开启CSM</li>
+<li>升级DP固件，具体点击 <a target="_blank" rel="noopener" href="https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/">https://www.nvidia.com/en-us/drivers/nv-uefi-update-x64/</a> 进行下载升级。期间你的屏幕可能会黑几次，请等待升级完成几块，然后你就会发现熟悉的BIOS欢迎页面又回来了，并且可以直接进入BIOS。</li>
+</ol>
+<p>DP固件升级适用于下列显卡</p>
+<figure class="highlight apache"><table><tr><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">NVIDIA</span> TITAN Series:<br><span class="hljs-attribute">TITAN</span> X (Maxwell), TITAN X (Pascal), TITAN XP<br><br><span class="hljs-attribute">GeForce</span> <span class="hljs-number">10</span> Series:<br><span class="hljs-attribute">GeForce</span> GT <span class="hljs-number">1030</span>, GeForce GTX <span class="hljs-number">1050</span>, GTX <span class="hljs-number">1050</span>Ti, GTX <span class="hljs-number">1060</span>, GTX <span class="hljs-number">1070</span>, GTX <span class="hljs-number">1070</span>Ti, GTX <span class="hljs-number">1080</span>, GTX <span class="hljs-number">1080</span>Ti<br><br><span class="hljs-attribute">GeForce</span> <span class="hljs-number">900</span> Series:<br><span class="hljs-attribute">GeForce</span> GTX <span class="hljs-number">950</span>, GTX <span class="hljs-number">950</span>Ti, GTX <span class="hljs-number">960</span>, GTX <span class="hljs-number">970</span>, GTX <span class="hljs-number">980</span>, GTX <span class="hljs-number">980</span>Ti<br><br><span class="hljs-attribute">GeForce</span> <span class="hljs-number">700</span> Series:<br><span class="hljs-attribute">GeForce</span> GTX <span class="hljs-number">745</span>, GTX <span class="hljs-number">750</span>, GTX <span class="hljs-number">750</span>Ti<br><br><span class="hljs-attribute">Quadro</span> Series:<br><span class="hljs-attribute">Quadro</span> Maxwell and Pascal products may be impacted.  For support and additional details, contact OEM/Channel partner.  If further assistance is required, visit //support.nvidia.com.<br></code></pre></td></tr></table></figure>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>本文作者：</strong>ZZH
+        </p>
+        <p>
+            <strong>
+                本文链接：
+            </strong>
+            <a href="https://nevercode.cn/fuck-windows11/">https://nevercode.cn/fuck-windows11/</a>
+        </p>
+        
+            <strong>
+                <p>除特殊说明外，所有文章保留权限。请不要转移本页面内容到其他站点。</p>
+
+            </strong>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>更新于 2023-02-27</p></div> 
+    <div class="post-entry__tags"></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/contract-paucet/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            简单实现带领取时间限制的水龙头
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">无码之地</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>

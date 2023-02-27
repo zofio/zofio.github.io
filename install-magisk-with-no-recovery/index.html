@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+
+    
+
+    <!-- 渲染优化 -->
+    <meta name="renderer" content="webkit">
+    <meta name="force-rendering" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="HandheldFriendly" content="True" >
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!--icon-->
+
+    
+        <link rel="shortcut icon" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="16x16" href="/img/logo.ico">
+    
+    
+        <link rel="icon" type="image/png" sizes="32x32" href="/img/logo.ico">
+    
+    
+        <link rel="apple-touch-icon" sizes="180x180" href="/img/logo.ico">
+    
+    
+        <link rel="mask-icon" href="/img/logo.ico">
+    
+
+
+    <!-- meta -->
+
+
+<title>无Recovery安装magisk | 无码之地</title>
+
+
+
+
+
+    <!-- OpenGraph -->
+
+
+    
+<link rel="stylesheet" href="/css/style/main.css">
+ 
+
+    
+    
+    
+        <link rel="stylesheet" id="hl-default-theme" href="https://cdn.jsdelivr.net/npm/highlight.js@10.1.2/styles/default.min.css" media="none" onload="this.media='all'">
+        
+    
+
+    
+
+    
+
+     
+
+    <!-- custom head -->
+
+
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+    <body>
+        <div id="app">
+            <header class="header">
+    <div class="header__left">
+        <a href="/" class="button">
+            <span class="logo__text">无码之地</span>
+        </a>
+    </div>
+    <div class="header__right">
+        
+            <div class="navbar__menus">
+                
+                    <a href="/" class="navbar-menu button">首页</a>
+                
+                    <a href="/archives/" class="navbar-menu button">归档</a>
+                
+                    <a href="/download/" class="navbar-menu button">备份下载</a>
+                
+            </div>
+        
+        
+        
+
+        
+        
+
+        
+            <a class="dropdown-icon button" id="btn-dropdown" tabindex="0"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width='24' height='24' fill="none" stroke="currentColor" stroke-width="0.7" stroke-linecap="round" stroke-linejoin="round"><path fill="currentColor" d="M3.314,4.8h13.372c0.41,0,0.743-0.333,0.743-0.743c0-0.41-0.333-0.743-0.743-0.743H3.314c-0.41,0-0.743,0.333-0.743,0.743C2.571,4.467,2.904,4.8,3.314,4.8z M16.686,15.2H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,15.2,16.686,15.2z M16.686,9.257H3.314c-0.41,0-0.743,0.333-0.743,0.743s0.333,0.743,0.743,0.743h13.372c0.41,0,0.743-0.333,0.743-0.743S17.096,9.257,16.686,9.257z"></path></svg></a>
+            <div class="dropdown-menus" id="dropdown-menus">
+                
+                    <a href="/" class="dropdown-menu button">首页</a>
+                
+                    <a href="/archives/" class="dropdown-menu button">归档</a>
+                
+                    <a href="/download/" class="dropdown-menu button">备份下载</a>
+                
+
+            </div>
+        
+    </div>
+</header>
+
+
+            <main class="main">
+    
+
+<div class="post-title">
+    <h1 class="post-title__text">
+        无Recovery安装magisk
+    </h1>
+    <div class="post-title__meta">
+        <a href="/archives/2022/03/" class="post-meta__date button">2022-03-25</a>
+        
+ 
+        
+    
+    
+
+
+ 
+
+ 
+    </div>
+</div>
+
+
+
+<article class="post content-card">
+    <div class="post__header"></div>
+    <div class="post__content">
+        <p>直接上步骤：</p>
+<h2 id="一、确定你的刷机包"><a href="#一、确定你的刷机包" class="headerlink" title="[一、确定你的刷机包]"></a>[一、确定你的刷机包]</h2><h3 id="1-线刷包"><a href="#1-线刷包" class="headerlink" title="1. 线刷包"></a>1. 线刷包</h3><p>找到你的boot.img文件，复制到手机内</p>
+<h3 id="2-卡刷包"><a href="#2-卡刷包" class="headerlink" title="2. 卡刷包"></a>2. 卡刷包</h3><p>首先解压你的卡刷包，然后下载<a target="_blank" rel="noopener" href="https://textview.io/files/payload_dumper-win64.zip">https://textview.io/files/payload_dumper-win64.zip</a></p>
+<p>解压，将上面解压后卡刷包内的payload.bin复制到payload_dumper文件夹内的payload_input文件夹内，后打开payload_dumper-win64，等待输出完成到payload_output中。</p>
+<h2 id="二、更改boot-img"><a href="#二、更改boot-img" class="headerlink" title="[二、更改boot.img]"></a>[二、更改boot.img]</h2><p>通过上面的1或2你会得到boot.img文件，将文件复制到手机内你找得到的地方。然后安装magisk apk，下载地址：<a target="_blank" rel="noopener" href="https://github.com/topjohnwu/Magisk/releases/tag/v24.3">https://github.com/topjohnwu/Magisk/releases/tag/v24.3</a></p>
+<p>安装Magisk之后打开，在第一张卡片（Magisk）右边，依次点击安装-安装-选择并修补一个文件，选择复制到手机内的boot.img</p>
+<p>然后手机会启动控制台，并且会为你展示输出地址，一般输出地址在你的手机目录的Download文件夹下，文件名为<code>magisk_patched-24300_*****.img</code>，复制这个文件到电脑。</p>
+<h2 id="三、刷入更改后的boot-img"><a href="#三、刷入更改后的boot-img" class="headerlink" title="[三、刷入更改后的boot.img]"></a>[三、刷入更改后的boot.img]</h2><p>首先下载adb，如果有请跳过，没有可以点击：<a target="_blank" rel="noopener" href="https://textview.io/files/adb.zip">https://textview.io/files/adb.zip</a> 进行下载。下载后解压到你能找到的位置。</p>
+<p>打开powershell，如果找不到在哪里，可以按<code>Windows+R</code>，然后输入powershell，回车即可。</p>
+<p>手机重启，按住音量减，按开机，进入fastboot，链接电脑。</p>
+<p>然后cd到你的<code>adb</code>文件夹内，首先输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">fastboot devices<br></code></pre></td></tr></table></figure>
+
+<p>查看是否有设备链接成功。然后输入</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash">./fastboot flash boot 路径/路径/magisk_patched-24300_*****.img <br></code></pre></td></tr></table></figure>
+
+<p>点击回车，大功告成，完成后手动重启即可！</p>
+<p><strong>注意！注意！注意！最后一行命令内的 <code>路径/路径/magisk_patched-24300_*****.img</code>需要输入你的实际地址！如果你不会，可以输入完其他命令之后，把更改后的boot.img文件拖入到powershell窗口内即可！</strong></p>
+
+    </div>
+    
+    <div class="post__license">
+        <p>
+            <strong>本文作者：</strong>ZZH
+        </p>
+        <p>
+            <strong>
+                本文链接：
+            </strong>
+            <a href="https://nevercode.cn/install-magisk-with-no-recovery/">https://nevercode.cn/install-magisk-with-no-recovery/</a>
+        </p>
+        
+            <strong>
+                <p>除特殊说明外，所有文章保留权限。请不要转移本页面内容到其他站点。</p>
+
+            </strong>
+        
+    </div>
+ 
+    <div class="post-footer__meta"><p>更新于 2023-02-27</p></div> 
+    <div class="post-entry__tags"></div> 
+</article>
+
+
+    <div class="nav">
+        <div class="nav__prev">
+            
+                <a href="/android-intent-with-no-router/" class="nav__link">
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M589.088 790.624L310.464 512l278.624-278.624 45.248 45.248L400.96 512l233.376 233.376z" fill="#808080"></path></svg>
+                    </div>
+                    <div>
+                        <div class="nav__label">
+                            Previous Post
+                        </div>
+                        <div class="nav__title">
+                            不使用[A]Router进行组件化之间的Activity跳转
+                        </div>
+                    </div>
+                </a>
+            
+        </div>
+        <div class="nav__next">
+            
+                <a href="/my-english/" class="nav__link">
+                    <div>
+                        <div class="nav__label">
+                            Next Post
+                        </div>
+                        <div class="nav__title">
+                            英文特殊发音
+                        </div>
+                    </div>
+                    <div>
+                        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path d="M434.944 790.624l-45.248-45.248L623.04 512l-233.376-233.376 45.248-45.248L713.568 512z" fill="#808080"></path></svg>
+                    </div>
+                </a>
+            
+        </div>
+    </div>
+
+
+
+
+
+</main>
+
+            <footer class="footer">
+    
+    
+
+
+    
+     
+ 
+
+ 
+    
+        
+        <p class="footer-copyright">
+            Copyright © 2023 <a href="/">无码之地</a>
+        </p>
+    
+    
+    <p>Powered by <a href="https://hexo.io" target="_blank">Hexo</a> | Theme - <a href="https://github.com/ChrAlpha/hexo-theme-cards" target="_blank">Cards</a></p>
+</footer>
+
+        </div>
+        
+    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.1.0/dist/lazyload.min.js"></script>
+    <script>
+        window.lazyLoadOptions = {
+            elements_selector: ".lazy",
+            threshold: 0
+        };
+    </script>
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+ 
+
+
+
+ 
+
+
+    
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+    </body>
+</html>
